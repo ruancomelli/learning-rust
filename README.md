@@ -1,2 +1,2 @@
-# learning-rust
+# Learning Rust
 Solved exercises to learn Rust
