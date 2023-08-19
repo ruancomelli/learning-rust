@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(fmt::Debug, PartialEq, Eq)]
+#[derive(fmt::Debug, PartialEq)]
 pub struct Clock {
     hours: i32,
     minutes: i32,
