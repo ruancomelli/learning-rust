@@ -1,5 +1,9 @@
 use std::fmt;
 
+const MINUTES_PER_HOUR: i32 = 60;
+const HOURS_PER_DAY: i32 = 24;
+
+
 #[derive(fmt::Debug, PartialEq)]
 pub struct Clock {
     hours: i32,
@@ -9,8 +13,8 @@ pub struct Clock {
 impl Clock {
     pub fn new(hours: i32, minutes: i32) -> Self {
         Clock {
-            hours: (hours + minutes.div_euclid(60)).rem_euclid(24),
-            minutes: minutes.rem_euclid(60),
+            hours: (hours + minutes.div_euclid(MINUTES_PER_HOUR)).rem_euclid(HOURS_PER_DAY),
+            minutes: minutes.rem_euclid(MINUTES_PER_HOUR),
         }
     }
 
