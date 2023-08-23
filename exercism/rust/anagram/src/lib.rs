@@ -1,5 +1,7 @@
-use std::collections::HashSet;
-use counter::Counter;
+use std::collections::{HashSet, HashMap};
+
+type CharChounter = HashMap<char, usize>;
+
 
 pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'a str> {
     let word_lower = word.to_lowercase();
@@ -18,6 +20,13 @@ pub fn anagrams_for<'a>(word: &str, possible_anagrams: &[&'a str]) -> HashSet<&'
 }
 
 
-fn letter_counts(word: &str) -> Counter<char> {
-    word.chars().collect::<Counter<_>>()
+fn letter_counts(word: &str) -> CharChounter {
+    let mut counter = CharChounter::new();
+
+    for c in word.chars() {
+        let count = counter.entry(c).or_insert(0);
+        *count += 1;
+    }
+
+    counter
 }

@@ -2,6 +2,3 @@
 edition = "2021"
 name = "anagram"
 version = "0.0.0"
-
-[dependencies]
-counter = "0.5.7"
