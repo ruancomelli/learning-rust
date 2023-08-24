@@ -29,9 +29,20 @@ jobs:
     strategy:
       matrix:
         exercise: ${{ fromJson(needs.find-exercises.outputs.exercises) }}
-
     steps:
     - uses: actions/checkout@v3
+    - name: Check formatting for '${{ matrix.exercise }}'
+      run: cargo fmt -- --check
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Lint '${{ matrix.exercise }}'
+      run: cargo clippy --all-targets --all-features
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Check documentation for '${{ matrix.exercise }}'
+      run: cargo doc --no-deps --document-private-items --all-features
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Check build for '${{ matrix.exercise }}'
+      run: cargo check --verbose
+      working-directory: exercism/rust/${{ matrix.exercise }}
     - name: Build '${{ matrix.exercise }}'
       run: cargo build --verbose
       working-directory: exercism/rust/${{ matrix.exercise }}
