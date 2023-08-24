@@ -22,7 +22,8 @@ jobs:
     outputs:
       exercises: ${{ steps.find-exercises.outputs.exercises }}
 
-  build:
+  build-and-test:
+    name: Build and test '${{ matrix.exercise }}'
     needs: find-exercises
     runs-on: ubuntu-latest
     strategy:
@@ -31,19 +32,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
+    - name: Build '${{ matrix.exercise }}'
       run: cargo build --verbose
       working-directory: exercism/rust/${{ matrix.exercise }}
-
-  test:
-    needs: [find-exercises, build]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        exercise: ${{ fromJson(needs.find-exercises.outputs.exercises) }}
-    
-    steps:
-    - uses: actions/checkout@v3
-    - name: Run tests
+    - name: Run tests for '${{ matrix.exercise }}'
       run: cargo test --verbose
       working-directory: exercism/rust/${{ matrix.exercise }}
