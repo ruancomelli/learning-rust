@@ -55,4 +55,4 @@ jobs:
     name: Success
     needs: check
     runs-on: ubuntu-latest
-    if: ${{ always() }}
+    run: echo "Success!"
