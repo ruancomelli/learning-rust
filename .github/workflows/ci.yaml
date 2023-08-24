@@ -1,0 +1,40 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  find-exercises:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - id: find-exercises
+      run: |
+        echo \
+          "exercises=$(ls exercism/rust | jq -R -s -c 'split("\n")[:-1]')" \
+          >> "$GITHUB_OUTPUT"
+    outputs:
+      exercises: ${{ steps.find-exercises.outputs.exercises }}
+
+  build-and-test:
+    name: Build and test '${{ matrix.exercise }}'
+    needs: find-exercises
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        exercise: ${{ fromJson(needs.find-exercises.outputs.exercises) }}
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build '${{ matrix.exercise }}'
+      run: cargo build --verbose
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Run tests for '${{ matrix.exercise }}'
+      run: cargo test --verbose
+      working-directory: exercism/rust/${{ matrix.exercise }}
