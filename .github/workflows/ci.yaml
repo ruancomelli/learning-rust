@@ -55,4 +55,5 @@ jobs:
     name: Success
     needs: check
     runs-on: ubuntu-latest
-    run: echo "Success!"
+    steps:
+    - run: echo "Success!"
