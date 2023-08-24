@@ -7,8 +7,7 @@ pub fn factors(n: u64) -> Vec<u64> {
         if n % i == 0 {
             n /= i;
             factors.push(i);
-        }
-        else {
+        } else {
             i += 1;
         }
     }
