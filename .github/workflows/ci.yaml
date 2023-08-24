@@ -50,3 +50,9 @@ jobs:
     - name: Run tests for '${{ matrix.exercise }}'
       run: cargo test --verbose
       working-directory: exercism/rust/${{ matrix.exercise }}
+
+  success:
+    name: Success
+    needs: check
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
