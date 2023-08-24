@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
@@ -11,6 +11,7 @@ env:
 
 jobs:
   find-exercises:
+    name: Find exercises
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -22,8 +23,8 @@ jobs:
     outputs:
       exercises: ${{ steps.find-exercises.outputs.exercises }}
 
-  build-and-test:
-    name: Build and test '${{ matrix.exercise }}'
+  check:
+    name: Check '${{ matrix.exercise }}'
     needs: find-exercises
     runs-on: ubuntu-latest
     strategy:
