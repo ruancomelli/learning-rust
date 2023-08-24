@@ -1,14 +1,15 @@
 pub fn factors(n: u64) -> Vec<u64> {
     let mut factors = Vec::new();
     let mut n = n;
-    let mut i = 2;
+    let mut candidate = 2;
+    let mut candidates = (3..).step_by(2);
 
-    while i <= n {
-        if n % i == 0 {
-            n /= i;
-            factors.push(i);
+    while n > 1 {
+        if n % candidate == 0 {
+            n /= candidate;
+            factors.push(candidate);
         } else {
-            i += 1;
+            candidate = candidates.next().unwrap();
         }
     }
 
