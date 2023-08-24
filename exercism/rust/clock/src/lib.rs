@@ -3,7 +3,6 @@ use std::fmt;
 const MINUTES_PER_HOUR: i32 = 60;
 const MINUTES_PER_DAY: i32 = 24 * MINUTES_PER_HOUR;
 
-
 #[derive(fmt::Debug, PartialEq)]
 pub struct Clock(i32);
 
@@ -19,6 +18,11 @@ impl Clock {
 
 impl fmt::Display for Clock {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:02}:{:02}", self.0 / MINUTES_PER_HOUR, self.0 % MINUTES_PER_HOUR)
+        write!(
+            f,
+            "{:02}:{:02}",
+            self.0 / MINUTES_PER_HOUR,
+            self.0 % MINUTES_PER_HOUR
+        )
     }
 }
