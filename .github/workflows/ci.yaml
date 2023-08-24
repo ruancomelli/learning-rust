@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  find-exercises:
+    name: Find exercises
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - id: find-exercises
+      run: |
+        echo \
+          "exercises=$(ls exercism/rust | jq -R -s -c 'split("\n")[:-1]')" \
+          >> "$GITHUB_OUTPUT"
+    outputs:
+      exercises: ${{ steps.find-exercises.outputs.exercises }}
+
+  check:
+    name: Check '${{ matrix.exercise }}'
+    needs: find-exercises
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        exercise: ${{ fromJson(needs.find-exercises.outputs.exercises) }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Check formatting for '${{ matrix.exercise }}'
+      run: cargo fmt -- --check
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Lint '${{ matrix.exercise }}'
+      run: cargo clippy --all-targets --all-features
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Check documentation for '${{ matrix.exercise }}'
+      run: cargo doc --no-deps --document-private-items --all-features
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Check build for '${{ matrix.exercise }}'
+      run: cargo check --verbose
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Build '${{ matrix.exercise }}'
+      run: cargo build --verbose
+      working-directory: exercism/rust/${{ matrix.exercise }}
+    - name: Run tests for '${{ matrix.exercise }}'
+      run: cargo test --verbose
+      working-directory: exercism/rust/${{ matrix.exercise }}
+
+  success:
+    name: Success
+    needs: check
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
