@@ -4,7 +4,7 @@ pub fn build_proverb(list: &[&str]) -> String {
         [first, rest @ ..] => {
             let mut proverb_lines = Vec::new();
 
-            let mut pairs = list.iter().zip(rest.iter());
+            let pairs = list.iter().zip(rest.iter());
             for (wanted_object, lost_object) in pairs {
                 proverb_lines.push(middle_sentence(wanted_object, lost_object));
             }
