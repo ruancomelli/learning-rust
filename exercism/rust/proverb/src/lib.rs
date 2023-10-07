@@ -2,21 +2,19 @@ pub fn build_proverb(list: &[&str]) -> String {
     match list {
         [] => String::new(),
         [first, rest @ ..] => {
-            let mut proverb_lines = Vec::new();
-
-            let pairs = list.iter().zip(rest.iter());
-            for (wanted_object, lost_object) in pairs {
-                proverb_lines.push(middle_sentence(wanted_object, lost_object));
-            }
-            proverb_lines.push(final_sentence(first));
-            proverb_lines.join("\n")
+            list
+                .iter()
+                .zip(rest.iter())
+                .map(|(wanted_object, lost_object)| middle_sentence(wanted_object, lost_object))
+                .chain(std::iter::once(final_sentence(first)))
+                .collect()
         }
     }
 }
 
 fn middle_sentence(wanted_object: &str, lost_object: &str) -> String {
     format!(
-        "For want of a {} the {} was lost.",
+        "For want of a {} the {} was lost.\n",
         wanted_object, lost_object
     )
 }
