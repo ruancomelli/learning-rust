@@ -15,7 +15,10 @@ pub fn build_proverb(list: &[&str]) -> String {
 }
 
 fn middle_sentence(wanted_object: &str, lost_object: &str) -> String {
-    format!("For want of a {} the {} was lost.", wanted_object, lost_object)
+    format!(
+        "For want of a {} the {} was lost.",
+        wanted_object, lost_object
+    )
 }
 
 fn final_sentence(wanted_object: &str) -> String {
