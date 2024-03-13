@@ -2,36 +2,45 @@
 // In order to pass the tests you can add-to or change any of this code.
 
 #[derive(Debug)]
-pub struct Duration;
+pub struct Duration {
+    seconds: u64,
+}
+
+const SECONDS_IN_EARTH_YEAR: u64 = 31557600;
 
 impl From<u64> for Duration {
     fn from(s: u64) -> Self {
-        unimplemented!("s, measured in seconds: {s}")
+        Duration { seconds: s }
     }
 }
 
 pub trait Planet {
+    fn years_during(d: &Duration) -> f64;
+}
+
+macro_rules! def_planet {
+    ($planet:ident, $orbital_period:expr) => {
+        pub struct $planet;
+        impl Planet for $planet {
+            fn years_during(d: &Duration) -> f64 {
+                Earth::years_during(d) / $orbital_period
+            }
+        }
+    };
+}
+
+pub struct Earth;
+
+impl Planet for Earth {
     fn years_during(d: &Duration) -> f64 {
-        unimplemented!(
-            "convert a duration ({d:?}) to the number of years on this planet for that duration"
-        );
+        d.seconds as f64 / SECONDS_IN_EARTH_YEAR as f64
     }
 }
 
-pub struct Mercury;
-pub struct Venus;
-pub struct Earth;
-pub struct Mars;
-pub struct Jupiter;
-pub struct Saturn;
-pub struct Uranus;
-pub struct Neptune;
-
-impl Planet for Mercury {}
-impl Planet for Venus {}
-impl Planet for Earth {}
-impl Planet for Mars {}
-impl Planet for Jupiter {}
-impl Planet for Saturn {}
-impl Planet for Uranus {}
-impl Planet for Neptune {}
+def_planet!(Mercury, 0.2408467);
+def_planet!(Venus, 0.61519726);
+def_planet!(Mars, 1.8808158);
+def_planet!(Jupiter, 11.862615);
+def_planet!(Saturn, 29.447498);
+def_planet!(Uranus, 84.016846);
+def_planet!(Neptune, 164.79132);
