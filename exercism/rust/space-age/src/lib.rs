@@ -15,16 +15,18 @@ impl From<u64> for Duration {
 }
 
 pub trait Planet {
-    fn years_during(d: &Duration) -> f64;
+    const ORBITAL_PERIOD: f64;
+
+    fn years_during(d: &Duration) -> f64 {
+        Earth::years_during(d) / Self::ORBITAL_PERIOD
+    }
 }
 
 macro_rules! def_planet {
     ($planet:ident, $orbital_period:expr) => {
         pub struct $planet;
         impl Planet for $planet {
-            fn years_during(d: &Duration) -> f64 {
-                Earth::years_during(d) / $orbital_period
-            }
+            const ORBITAL_PERIOD: f64 = $orbital_period;
         }
     };
 }
@@ -32,6 +34,8 @@ macro_rules! def_planet {
 pub struct Earth;
 
 impl Planet for Earth {
+    const ORBITAL_PERIOD: f64 = 1.0;
+
     fn years_during(d: &Duration) -> f64 {
         d.seconds as f64 / SECONDS_IN_EARTH_YEAR as f64
     }
