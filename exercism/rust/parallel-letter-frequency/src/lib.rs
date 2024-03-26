@@ -18,10 +18,12 @@ pub fn frequency(input: &[&str], worker_count: usize) -> HashMap<char, usize> {
                     let mut counter = HashMap::<char, usize>::new();
 
                     for row in chunk {
-                        for c in row.chars().filter(|c| c.is_alphabetic()) {
-                            if let Some(c) = c.to_lowercase().next() {
-                                counter.entry(c).or_insert(0).add_assign(1);
-                            }
+                        for c in row
+                            .chars()
+                            .filter(|c| c.is_alphabetic())
+                            .flat_map(|c| c.to_lowercase())
+                        {
+                            counter.entry(c).or_insert(0).add_assign(1);
                         }
                     }
 
