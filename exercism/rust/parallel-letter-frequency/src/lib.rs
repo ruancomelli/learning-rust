@@ -1,45 +1,24 @@
-use std::{collections::HashMap, ops::AddAssign, sync::mpsc, thread};
+use std::{collections::HashMap, ops::Add};
+
+use counter::Counter;
+use rayon::{
+    iter::{IntoParallelRefIterator, ParallelIterator},
+    ThreadPoolBuilder,
+};
 
 pub fn frequency(input: &[&str], worker_count: usize) -> HashMap<char, usize> {
-    let mut total_count = HashMap::<char, usize>::new();
-
-    if input.is_empty() {
-        return total_count;
-    }
-
-    let receiver = {
-        let (sender, receiver) = mpsc::channel();
-
-        thread::scope(|s| {
-            for chunk in input.chunks((input.len() - 1) / worker_count + 1) {
-                let thread_sender = sender.clone();
-
-                s.spawn(move || {
-                    let mut counter = HashMap::<char, usize>::new();
-
-                    for row in chunk {
-                        for c in row
-                            .chars()
-                            .filter(|c| c.is_alphabetic())
-                            .flat_map(|c| c.to_lowercase())
-                        {
-                            counter.entry(c).or_insert(0).add_assign(1);
-                        }
-                    }
-
-                    thread_sender.send(counter).unwrap();
-                });
-            }
-        });
-
-        receiver
-    };
-
-    for counter in receiver {
-        for (c, count) in counter {
-            total_count.entry(c).or_insert(0).add_assign(count);
-        }
-    }
-
-    total_count
+    ThreadPoolBuilder::new()
+        .num_threads(worker_count)
+        .build()
+        .unwrap()
+        .install(|| {
+            input.par_iter().map(|row| {
+                row.chars()
+                    .filter(|c| c.is_alphabetic())
+                    .flat_map(|c| c.to_lowercase())
+                    .collect::<Counter<_>>()
+            })
+        })
+        .reduce(Counter::new, Counter::add)
+        .into_map()
 }
