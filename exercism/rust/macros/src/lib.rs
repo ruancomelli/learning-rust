@@ -4,14 +4,13 @@ macro_rules! hashmap {
         ::std::collections::HashMap::new()
     };
     (
-        $first_key:expr => $first_value:expr
-        $(, $key:expr => $value:expr )*
-        $(,)? // trailing comma allowed
+        $($key:expr => $value:expr),+
+        // optional trailing comma
+        $(,)?
     ) => {
         ::std::collections::HashMap::from(
             [
-                ($first_key, $first_value)
-                $(, ($key, $value))*
+                $(($key, $value),)*
             ]
         )
     };
