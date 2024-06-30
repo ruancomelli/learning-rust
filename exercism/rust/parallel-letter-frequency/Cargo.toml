@@ -4,5 +4,5 @@ name = "parallel-letter-frequency"
 version = "0.0.0"
 
 [dependencies]
-counter = "0.5.7"
+counter = "0.6.0"
 rayon = "1.10.0"
